@@ -1,0 +1,64 @@
+buildscript {
+	ext {
+		springBootVersion = '1.4.2.RELEASE'
+	}
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+	}
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse-wtp'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'war'
+apply plugin: 'maven'
+
+
+war {
+	baseName ='sam-dashboard'
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+	mavenCentral()
+	mavenLocal()
+}
+
+configurations {
+	providedRuntime
+}
+
+
+dependencies {
+    compile("org.springframework.boot:spring-boot-starter-thymeleaf")
+    // tag::security[]
+    compile("org.springframework.boot:spring-boot-starter-security")
+    // end::security[]
+    testCompile("junit:junit")
+    testCompile("org.springframework.boot:spring-boot-starter-test")
+    testCompile("org.springframework.security:spring-security-test")	
+        compile("org.springframework.boot:spring-boot-starter-data-mongodb")
+    
+}
+
+jar {
+   from configurations.compile.collect { zipTree it }    
+}
+
+test {
+	useTestNG()
+}
+
+test {
+    filter {
+
+        //include all tests from package
+        includeTestsMatching "testCaseSamDashboard.*"
+
+    }
+}
